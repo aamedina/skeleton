@@ -1,4 +1,4 @@
-Copyright 2016 Adrian Medina. All rights reserved.
+Copyright <%= (local-time:timestamp-year (local-time:now)) %> <% @var author %>. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
