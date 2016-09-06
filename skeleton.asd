@@ -1,51 +1,33 @@
-#|
-  This file is a part of <% @var name %> project.
-<%- @if author %>
-  Copyright (c) <%= (local-time:timestamp-year (local-time:now)) %> <% @var author %><% @if email %> (<% @var email %>)<% @endif %>
-<%- @endif %>
-|#
-<%
-(when (or (getf env :description)
-          (getf env :author))
-%>
-#|
-<%- @if description %>
-  <% @var description %>
-  <%- @if author %>
-<% @endif %>
-<%- @endif %>
-<%- @if author %>
-  Author: <% @var author %><% @if email %> (<% @var email %>)<% @endif %>
-<%- @endif %>
-|#
-<% ) %>
-(in-package :cl-user)
-(defpackage <% @var name %>-asd
-  (:use :cl :asdf))
-(in-package :<% @var name %>-asd)
+;; Copyright <%= (local-time:timestamp-year (local-time:now)) %> <% @var author %>. All rights reserved.
 
-(defsystem <% @var name %>
-  :version "0.1"
-  :author "<% @var author %>"
-  :license "<% @var license %>"
-  :depends-on (<% (format t "~{:~(~A~)~^~%               ~}"
-                          (getf env :depends-on)) %>)
-  :components ((:module "src"
-                :components
-                ((:file "<% @var name %>"))))
+;; Redistribution and use in source and binary forms, with or without
+;; modification, are permitted provided that the following conditions
+;; are met:
+;; 1. Redistributions of source code must retain the above copyright
+;;    notice, this list of conditions and the following disclaimer.
+;; 2. Redistributions in binary form must reproduce the above copyright
+;;    notice, this list of conditions and the following disclaimer in the
+;;    documentation and/or other materials provided with the distribution.
+
+;; THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+;; ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+;; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+;; ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+;; FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+;; DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+;; OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+;; HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+;; LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+;; OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+;; SUCH DAMAGE.
+
+#-asdf3.1 (error "<% @var name%>'s build system depends on ASDF 3.1")
+
+(asdf:defsystem <% @var name %>
   :description "<% @var description %>"
-  :long-description
-  #.(with-open-file (stream (merge-pathnames
-                             #p"README.markdown"
-                             (or *load-pathname* *compile-file-pathname*))
-                            :if-does-not-exist nil
-                            :direction :input)
-      (when stream
-        (let ((seq (make-array (file-length stream)
-                               :element-type 'character
-                               :fill-pointer t)))
-          (setf (fill-pointer seq) (read-sequence seq stream))
-          seq)))
-  <%- @unless without-tests %>
-  :in-order-to ((test-op (test-op <% @var name %>-test)))
-  <%- @endunless %>)
+  :author "<% @var author %>"
+  :license "Simplified BSD License"
+  :version "0.1.0"
+  :class :package-inferred-system
+  :depends-on (:<% @var name %>/all)
+  :pathname "src/lisp/")
